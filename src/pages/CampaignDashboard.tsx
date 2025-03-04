@@ -8,10 +8,12 @@ import CampaignCreator from '@/components/CampaignCreator';
 import CampaignMetrics from '@/components/CampaignMetrics';
 import Navigation from '@/components/Navigation';
 import { AlertCircle, BarChart2, Mail, Play, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const CampaignDashboard = () => {
   const [campaign, setCampaign] = useState<CampaignData | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+  const navigate = useNavigate();
   
   const handleCampaignCreated = (newCampaign: CampaignData) => {
     setCampaign(newCampaign);
@@ -41,6 +43,14 @@ const CampaignDashboard = () => {
   const handleResetCampaign = () => {
     setCampaign(null);
     toast.info('Campaign reset');
+  };
+  
+  const handleViewEmails = () => {
+    if (campaign && campaign.status === 'completed') {
+      navigate('/analysis', { state: { campaign } });
+    } else {
+      toast.error('Please complete the campaign first to view emails');
+    }
   };
   
   return (
@@ -73,6 +83,16 @@ const CampaignDashboard = () => {
                     <Play className="h-4 w-4" />
                   )}
                   {isSimulating ? 'Simulating...' : 'Start Campaign'}
+                </Button>
+              )}
+              {campaign.status === 'completed' && (
+                <Button
+                  onClick={handleViewEmails}
+                  className="flex items-center gap-2"
+                  variant="secondary"
+                >
+                  <Mail className="h-4 w-4" />
+                  View Intercepted Emails
                 </Button>
               )}
               <Button 

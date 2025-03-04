@@ -7,29 +7,53 @@ import { generateEmail } from '@/utils/emailUtils';
 import { EmailData } from '@/types';
 import { useLocation } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Inbox, Search } from 'lucide-react';
+import { Inbox, Search, ShieldAlert } from 'lucide-react';
+import { useCampaignStore } from '@/store/campaignStore';
+import { toast } from 'sonner';
 
 const EmailAnalysis = () => {
   const [emails, setEmails] = useState<EmailData[]>([]);
   const [selectedEmail, setSelectedEmail] = useState<EmailData | null>(null);
   const location = useLocation();
+  const { currentCampaign, setCurrentCampaign } = useCampaignStore();
   
-  // Check for campaign data in location state
+  // Check for campaign data in both location state and store
   useEffect(() => {
-    const campaign = location.state?.campaign;
-    if (campaign) {
+    console.log("Location state:", location.state);
+    console.log("Current campaign in store:", currentCampaign);
+    
+    const campaignFromLocation = location.state?.campaign;
+    
+    if (campaignFromLocation) {
+      console.log("Found campaign in location state, generating emails...");
+      // Save to store for persistence
+      setCurrentCampaign(campaignFromLocation);
+      
       // Generate emails from campaign recipients
-      const generatedEmails = campaign.recipients.map(recipient => 
-        generateEmail(campaign, recipient)
+      const generatedEmails = campaignFromLocation.recipients.map(recipient => 
+        generateEmail(campaignFromLocation, recipient)
       );
       setEmails(generatedEmails);
       
       // Select the first email if available
       if (generatedEmails.length > 0) {
         setSelectedEmail(generatedEmails[0]);
+        toast.success(`${generatedEmails.length} emails intercepted from campaign "${campaignFromLocation.name}"`);
+      }
+    } else if (currentCampaign) {
+      console.log("Using campaign from store, generating emails...");
+      // Use campaign from store if available
+      const generatedEmails = currentCampaign.recipients.map(recipient => 
+        generateEmail(currentCampaign, recipient)
+      );
+      setEmails(generatedEmails);
+      
+      // Select the first email if available
+      if (generatedEmails.length > 0 && !selectedEmail) {
+        setSelectedEmail(generatedEmails[0]);
       }
     }
-  }, [location.state]);
+  }, [location.state, currentCampaign, setCurrentCampaign]);
   
   const handleSelectEmail = (email: EmailData) => {
     setSelectedEmail(email);
@@ -54,7 +78,7 @@ const EmailAnalysis = () => {
       <main className="flex-1 container py-6 md:py-12">
         <div className="mb-8">
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Inbox className="h-8 w-8" />
+            <ShieldAlert className="h-8 w-8" />
             Email Interception Dashboard
           </h1>
           <p className="text-muted-foreground mt-1">
