@@ -29,79 +29,15 @@ interface CampaignCreatorProps {
 
 const CampaignCreator: React.FC<CampaignCreatorProps> = ({ onCampaignCreated }) => {
   const [activeTab, setActiveTab] = useState('email');
-  const [campaignName, setCampaignName] = useState('Target Company Phishing Campaign');
-  const [subject, setSubject] = useState('Urgent: Action Required - Your Account Access');
-  const [senderName, setSenderName] = useState('IT Security Team');
-  const [senderEmail, setSenderEmail] = useState('security@companylookalike.com');
-  const [replyTo, setReplyTo] = useState('support@different-domain.com');
+  const [campaignName, setCampaignName] = useState('');
+  const [subject, setSubject] = useState('');
+  const [senderName, setSenderName] = useState('');
+  const [senderEmail, setSenderEmail] = useState('');
+  const [replyTo, setReplyTo] = useState('');
   
-  const [htmlContent, setHtmlContent] = useState(`
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { text-align: center; padding-bottom: 20px; }
-    .logo { max-width: 150px; }
-    .button { background-color: #0056b3; color: white; padding: 10px 20px; 
-              text-decoration: none; border-radius: 4px; display: inline-block; }
-    .footer { font-size: 12px; color: #666; margin-top: 30px; }
-    /* Hidden flag comment: CTF{1nsp3ct_th3_html_c0mm3nts} */
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <img src="https://company-logo.com/logo.png" alt="Company Logo" class="logo">
-      <h2>Important Security Notice</h2>
-    </div>
-    
-    <p>Dear Valued Employee,</p>
-    
-    <p>Our security systems have detected unusual login activity on your account. 
-       For your protection, we need you to verify your account details immediately.</p>
-    
-    <p>If you don't verify within 24 hours, your account access will be suspended.</p>
-    
-    <p style="text-align: center; margin: 30px 0;">
-      <a href="##TRACKING_URL##" class="button">Verify Account Now</a>
-    </p>
-    
-    <p>If you didn't request this verification, please contact the IT department immediately.</p>
-    
-    <p>Thank you,<br>
-       IT Security Team</p>
-    
-    <div class="footer">
-      <p>This is an automated message, please do not reply directly to this email.</p>
-    </div>
-  </div>
-</body>
-</html>
-  `);
-  
-  const [textContent, setTextContent] = useState(`
-IMPORTANT SECURITY NOTICE
-
-Dear Valued Employee,
-
-Our security systems have detected unusual login activity on your account. 
-For your protection, we need you to verify your account details immediately.
-
-If you don't verify within 24 hours, your account access will be suspended.
-
-Please visit: ##TRACKING_URL##
-
-If you didn't request this verification, please contact the IT department immediately.
-
-Thank you,
-IT Security Team
-
-This is an automated message, please do not reply directly to this email.
-  `);
-  
-  const [recipientEmails, setRecipientEmails] = useState('user1@target.com\nuser2@target.com\nuser3@target.com\nuser4@target.com\nuser5@target.com');
+  const [htmlContent, setHtmlContent] = useState('');
+  const [textContent, setTextContent] = useState('');
+  const [recipientEmails, setRecipientEmails] = useState('');
   
   const handleCreateCampaign = () => {
     if (!campaignName || !subject || !senderName || !senderEmail || !htmlContent || !textContent || !recipientEmails) {
